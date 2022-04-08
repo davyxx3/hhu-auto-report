@@ -16,10 +16,8 @@ import (
 )
 
 type StuData struct {
-	stuId   string
-	stuPwd  string
-	stuName string
-	stuInfo string
+	stuId  string
+	stuPwd string
 }
 
 var stuData = StuData{}
@@ -63,17 +61,9 @@ func (stuData *StuData) loadStuData() error {
 	if stuData.stuId == "" {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
-	stuData.stuName = cfg.Section("student").Key("stu_name").MustString(os.Getenv("STU_NAME"))
-	if stuData.stuId == "" {
-		return errors.New("无法读取姓名！启动失败！ :(")
-	}
 	stuData.stuPwd = cfg.Section("student").Key("stu_pwd").MustString(os.Getenv("STU_PWD"))
 	if stuData.stuId == "" {
 		return errors.New("无法读取密码！启动失败！ :(")
-	}
-	stuData.stuInfo = cfg.Section("student").Key("stu_info").MustString(os.Getenv("STU_INFO"))
-	if stuData.stuId == "" {
-		return errors.New("无法读取班级年级专业信息！启动失败！ :(")
 	}
 	return nil
 }
@@ -84,13 +74,15 @@ func report() {
 	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
 		if retryCount > maxRetry {
-			log.Println(err.Error())
+			fmt.Println(err.Error())
+			log.Fatal(err.Error())
 			return
 		}
 		err = reportTry()
 		retryCount++
 	}
-	log.Printf("打卡成功! 重试次数：%d :)\n", retryCount)
+	fmt.Println("打卡成功！:)")
+	log.Println("打卡成功! :)")
 }
 
 func reportTry() error {
@@ -139,7 +131,12 @@ func reportTry() error {
 	reportPage.OnHTML("#form1", func(e *colly.HTMLElement) {
 		viewState := e.ChildAttr("#__VIEWSTATE", "value")
 		viewStateGenerator := e.ChildAttr("#__VIEWSTATEGENERATOR", "value")
+		stuName := e.ChildAttr("#xm", "value")
+		stuInfo := e.ChildAttr("#bjhm", "value")
 		reportDataInit(&reportData)
+		reportData.Set("uname", stuName)
+		reportData.Set("xm", stuName)
+		reportData.Set("bjhm", stuInfo)
 		reportData.Set("__VIEWSTATE", viewState)
 		reportData.Set("__VIEWSTATEGENERATOR", viewStateGenerator)
 	})
@@ -153,7 +150,7 @@ func reportTry() error {
 	reporter.OnHTML("#cw", func(e *colly.HTMLElement) {
 		result := e.Attr("value")
 		if result != "新建成功!" && result != "保存修改成功!" {
-			err = errors.New("打卡失败了... :(")
+			err = errors.New("打卡失败了...请再试试吧 :(")
 		}
 	})
 
@@ -193,12 +190,9 @@ func reportDataInit(reportData *url.Values) {
 	reportData.Set("xcmqkdm", "2")
 	reportData.Set("brcnnrss", "ON")
 	reportData.Set("ck_brcnnrss", "false")
-	reportData.Set("uname", stuData.stuName)
 	reportData.Set("pzd_lock", "uname,")
 	reportData.Set("xdm", "06")
-	reportData.Set("bjhm", stuData.stuInfo)
 	reportData.Set("xh", stuData.stuId)
-	reportData.Set("xm", stuData.stuName)
 	reportData.Set("qx_r", "1")
 	reportData.Set("qx_i", "1")
 	reportData.Set("qx_u", "1")
