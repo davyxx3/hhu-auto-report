@@ -3,6 +3,7 @@ FROM golang:bullseye
 ENV GO111MODULE="on"
 ENV GOPROXY="https://goproxy.cn,direct"
 
+# 安装必要的环境
 RUN cd /etc/apt && > sources.list \
     && echo "deb http://mirrors.aliyun.com/debian  stable main contrib non-free" >> sources.list \
     && echo "deb http://mirrors.aliyun.com/debian  stable-updates main contrib non-free" >> sources.list \

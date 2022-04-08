@@ -12,14 +12,15 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/otiai10/gosseract/v2"
-	"github.com/robfig/cron"
+	"gopkg.in/ini.v1"
 )
 
-var stuId string
-var stuPwd string
-var stuName string
-var stuInfo string
+type StuData struct {
+	stuId  string
+	stuPwd string
+}
 
+var stuData = StuData{}
 var loginData = url.Values{}
 var reportData = url.Values{}
 
@@ -28,18 +29,17 @@ var maxRetry = 10
 var logPath = "./hhu_auto_report.log"
 
 func main() {
-	err := GetStuData()
+	// 加载学生数据
+	err := stuData.loadStuData()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	// 日志配置
 	logFile, _ := logConfig(logPath)
 	defer logFile.Close()
-	c := cron.New()
-	c.AddFunc("0 0 12 * * * ", report)
-	c.Start()
-	fmt.Println("自动打卡已启动！默认每天中午12点打卡哦！ :)")
-	select {}
+	// 开始打卡
+	report()
 }
 
 func logConfig(logPath string) (*os.File, error) {
@@ -51,23 +51,19 @@ func logConfig(logPath string) (*os.File, error) {
 	return logFile, nil
 }
 
-func GetStuData() error {
-	var status bool
-	stuId, status = os.LookupEnv("STU_ID")
-	if !status {
+// 加载学生数据（优先度：config.ini文件 > 环境变量）
+func (stuData *StuData) loadStuData() error {
+	cfg, err := ini.Load("config.ini")
+	if err != nil {
+		return errors.New("config.ini文件不存在！ 启动失败 :(")
+	}
+	stuData.stuId = cfg.Section("student").Key("stu_id").MustString(os.Getenv("STU_ID"))
+	if stuData.stuId == "" {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
-	stuName, status = os.LookupEnv("STU_NAME")
-	if !status {
-		return errors.New("无法读取姓名！启动失败！ :(")
-	}
-	stuPwd, status = os.LookupEnv("STU_PWD")
-	if !status {
+	stuData.stuPwd = cfg.Section("student").Key("stu_pwd").MustString(os.Getenv("STU_PWD"))
+	if stuData.stuId == "" {
 		return errors.New("无法读取密码！启动失败！ :(")
-	}
-	stuInfo, status = os.LookupEnv("STU_INFO")
-	if !status {
-		return errors.New("无法读取班级年级专业信息！启动失败！ :(")
 	}
 	return nil
 }
@@ -75,15 +71,18 @@ func GetStuData() error {
 func report() {
 	var retryCount = 0
 	err := reportTry()
+	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
 		if retryCount > maxRetry {
-			log.Println(err.Error())
+			fmt.Println(err.Error())
+			log.Fatal(err.Error())
 			return
 		}
 		err = reportTry()
 		retryCount++
 	}
-	log.Printf("打卡成功! 重试次数：%d\n", retryCount)
+	fmt.Println("打卡成功！:)")
+	log.Println("打卡成功! :)")
 }
 
 func reportTry() error {
@@ -132,7 +131,12 @@ func reportTry() error {
 	reportPage.OnHTML("#form1", func(e *colly.HTMLElement) {
 		viewState := e.ChildAttr("#__VIEWSTATE", "value")
 		viewStateGenerator := e.ChildAttr("#__VIEWSTATEGENERATOR", "value")
+		stuName := e.ChildAttr("#xm", "value")
+		stuInfo := e.ChildAttr("#bjhm", "value")
 		reportDataInit(&reportData)
+		reportData.Set("uname", stuName)
+		reportData.Set("xm", stuName)
+		reportData.Set("bjhm", stuInfo)
 		reportData.Set("__VIEWSTATE", viewState)
 		reportData.Set("__VIEWSTATEGENERATOR", viewStateGenerator)
 	})
@@ -146,7 +150,7 @@ func reportTry() error {
 	reporter.OnHTML("#cw", func(e *colly.HTMLElement) {
 		result := e.Attr("value")
 		if result != "新建成功!" && result != "保存修改成功!" {
-			err = errors.New("打卡出错了... :(")
+			err = errors.New("打卡失败了...请再试试吧 :(")
 		}
 	})
 
@@ -158,10 +162,10 @@ func reportTry() error {
 func loginDataInit(data *url.Values) {
 	data.Set("yxdm", "10294")
 	data.Set("__VIEWSTATEENCRYPTED", "")
-	data.Set("userbh", stuId)
+	data.Set("userbh", stuData.stuId)
 	data.Set("cw", "")
 	data.Set("xzbz", "1")
-	data.Set("pas2s", generateCryptedPwd(stuPwd))
+	data.Set("pas2s", generateCryptedPwd(stuData.stuPwd))
 }
 
 // 初始化健康打卡报文的数据
@@ -186,12 +190,9 @@ func reportDataInit(reportData *url.Values) {
 	reportData.Set("xcmqkdm", "2")
 	reportData.Set("brcnnrss", "ON")
 	reportData.Set("ck_brcnnrss", "false")
-	reportData.Set("uname", stuName)
 	reportData.Set("pzd_lock", "uname,")
 	reportData.Set("xdm", "06")
-	reportData.Set("bjhm", stuInfo)
-	reportData.Set("xh", stuId)
-	reportData.Set("xm", stuName)
+	reportData.Set("xh", stuData.stuId)
 	reportData.Set("qx_r", "1")
 	reportData.Set("qx_i", "1")
 	reportData.Set("qx_u", "1")
