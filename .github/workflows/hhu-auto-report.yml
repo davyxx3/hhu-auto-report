@@ -15,7 +15,7 @@ jobs:
           STU_DATA: ${{ secrets.STU_DATA }}
         run: |
           cd $GITHUB_WORKSPACE/bin/github_action/
-          chmod +x ./hhu_auto_report
+          chmod +x ./hhu-auto-report
           echo # > config.ini
           echo $STU_DATA > config.ini
-          ./hhu_auto_report
+          ./hhu-auto-report
