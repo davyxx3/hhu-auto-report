@@ -12,6 +12,7 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/otiai10/gosseract/v2"
+	"github.com/robfig/cron"
 	"gopkg.in/ini.v1"
 )
 
@@ -38,8 +39,12 @@ func main() {
 	// 日志配置
 	logFile, _ := logConfig(logPath)
 	defer logFile.Close()
-	// 开始打卡
-	report()
+	// 开始定时任务
+	c := cron.New()
+	c.AddFunc("0 0 12 * * * ", report)
+	c.Start()
+	fmt.Println("自动打卡已启动！默认每天中午12点打卡哦！ :)")
+	select {}
 }
 
 func logConfig(logPath string) (*os.File, error) {
@@ -74,14 +79,12 @@ func report() {
 	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
 		if retryCount > maxRetry {
-			fmt.Println(err.Error())
 			log.Fatal(err.Error())
 			return
 		}
 		err = reportTry()
 		retryCount++
 	}
-	fmt.Println("打卡成功！:)")
 	log.Println("打卡成功! :)")
 }
 
@@ -150,7 +153,7 @@ func reportTry() error {
 	reporter.OnHTML("#cw", func(e *colly.HTMLElement) {
 		result := e.Attr("value")
 		if result != "新建成功!" && result != "保存修改成功!" {
-			err = errors.New("打卡失败了...请再试试吧 :(")
+			err = errors.New("打卡失败！ :(")
 		}
 	})
 
