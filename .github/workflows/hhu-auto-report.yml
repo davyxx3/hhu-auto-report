@@ -10,12 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: report
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         env:
           STU_DATA: ${{ secrets.STU_DATA }}
         run: |
-          cd $GITHUB_WORKSPACE/bin/github_action/
+          cd $GITHUB_WORKSPACE/github_action/
           chmod +x ./hhu-auto-report
-          echo # > config.ini
           echo $STU_DATA > config.ini
           ./hhu-auto-report
