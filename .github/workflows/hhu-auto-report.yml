@@ -16,5 +16,6 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/bin/github_action/
           chmod +x ./hhu_auto_report
+          echo # > config.ini
           echo $STU_DATA > config.ini
           ./hhu_auto_report
