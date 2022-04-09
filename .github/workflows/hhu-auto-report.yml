@@ -17,7 +17,7 @@ jobs:
       - name: report
         env: 
           STU_ID: ${{ secrets.STU_ID }}
-          STU_PWD: ${{ secrets.PWD }}
+          STU_PWD: ${{ secrets.STU_PWD }}
         run: |
           sudo apt install tesseract-ocr -y
           sudo apt install libtesseract-dev -y

@@ -45,12 +45,12 @@ func (stuData *StuData) loadStuData() error {
 	if !isValid {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
-	log.Println("成功读取学号！", stuData.stuId)
+	log.Println("成功读取学号！")
 	stuData.stuPwd, isValid = os.LookupEnv("STU_PWD")
 	if !isValid {
 		return errors.New("无法读取密码！启动失败！ :(")
 	}
-	log.Println("成功读取密码！", stuData.stuPwd)
+	log.Println("成功读取密码！")
 	return nil
 }
 
