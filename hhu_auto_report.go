@@ -12,7 +12,6 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/otiai10/gosseract/v2"
-	"gopkg.in/ini.v1"
 )
 
 type StuData struct {
@@ -53,16 +52,13 @@ func logConfig(logPath string) (*os.File, error) {
 
 // 加载学生数据（优先度：config.ini文件 > 环境变量）
 func (stuData *StuData) loadStuData() error {
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		return errors.New("config.ini文件不存在! 启动失败 :(")
-	}
-	stuData.stuId = cfg.Section("student").Key("stu_id").MustString(os.Getenv("STU_ID"))
-	if stuData.stuId == "" {
+	var isValid bool
+	stuData.stuId, isValid = os.LookupEnv("STU_ID")
+	if !isValid {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
-	stuData.stuPwd = cfg.Section("student").Key("stu_pwd").MustString(os.Getenv("STU_PWD"))
-	if stuData.stuId == "" {
+	stuData.stuPwd, isValid = os.LookupEnv("STU_PWD")
+	if !isValid {
 		return errors.New("无法读取密码！启动失败！ :(")
 	}
 	return nil

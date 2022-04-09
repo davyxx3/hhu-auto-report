@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/gocolly/colly v1.2.0
 	github.com/otiai10/gosseract/v2 v2.3.1
-	gopkg.in/ini.v1 v1.66.4
 )
 
 require (
