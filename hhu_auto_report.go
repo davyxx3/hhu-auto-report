@@ -43,7 +43,7 @@ func main() {
 	c := cron.New()
 	c.AddFunc("0 0 12 * * * ", report)
 	c.Start()
-	fmt.Println("自动打卡已启动！默认每天中午12点打卡哦！ :)")
+	fmt.Println("自动打卡已启动! 默认每天中午12点打卡哦! :)")
 	select {}
 }
 
@@ -60,7 +60,7 @@ func logConfig(logPath string) (*os.File, error) {
 func (stuData *StuData) loadStuData() error {
 	cfg, err := ini.Load("config.ini")
 	if err != nil {
-		return errors.New("config.ini文件不存在！ 启动失败 :(")
+		return errors.New("config.ini文件不存在! 启动失败 :(")
 	}
 	stuData.stuId = cfg.Section("student").Key("stu_id").MustString(os.Getenv("STU_ID"))
 	if stuData.stuId == "" {
@@ -80,12 +80,14 @@ func report() {
 	for err != nil {
 		if retryCount > maxRetry {
 			log.Fatal(err.Error())
+			fmt.Println(err.Error())
 			return
 		}
 		err = reportTry()
 		retryCount++
 	}
 	log.Println("打卡成功! :)")
+	fmt.Println("打卡成功! :)")
 }
 
 func reportTry() error {
