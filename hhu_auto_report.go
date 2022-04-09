@@ -25,7 +25,6 @@ var reportData = url.Values{}
 
 var timeStr = time.Now().Format("2006-01-02")
 var maxRetry = 10
-var logPath = "./hhu_auto_report.log"
 
 func main() {
 	// 加载学生数据
@@ -34,33 +33,24 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
-	// 日志配置
-	logFile, _ := logConfig(logPath)
-	defer logFile.Close()
 	// 开始打卡
+	log.Println("打卡开始！")
 	report()
 }
 
-func logConfig(logPath string) (*os.File, error) {
-	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
-	if err != nil {
-		return nil, err
-	}
-	log.SetOutput(logFile)
-	return logFile, nil
-}
-
-// 加载学生数据（优先度：config.ini文件 > 环境变量）
+// 加载学生数据
 func (stuData *StuData) loadStuData() error {
 	var isValid bool
 	stuData.stuId, isValid = os.LookupEnv("STU_ID")
 	if !isValid {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
+	log.Println("成功读取学号！")
 	stuData.stuPwd, isValid = os.LookupEnv("STU_PWD")
 	if !isValid {
 		return errors.New("无法读取密码！启动失败！ :(")
 	}
+	log.Println("成功读取密码！")
 	return nil
 }
 
@@ -69,16 +59,15 @@ func report() {
 	err := reportTry()
 	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
+		log.Println("打卡失败, 正在重试中...")
 		if retryCount > maxRetry {
 			log.Fatal(err.Error())
-			fmt.Println(err.Error())
 			return
 		}
 		err = reportTry()
 		retryCount++
 	}
 	log.Println("打卡成功! :)")
-	fmt.Println("打卡成功! :)")
 }
 
 func reportTry() error {
