@@ -15,7 +15,7 @@
 
 ## 使用方式
 
-### 方式一：Github Action全自动操作（推荐）
+Github Action全自动操作（测试中）
 
 建立secrets，格式如下：
 
@@ -26,23 +26,4 @@ stu_pwd = xxx
 ```
 
 分别换成自己的学号和奥兰系统登陆密码
-
-
-
-### 方式二：Docker
-
-```bash
-# 拉取镜像
-docker pull davyxx3/hhu-auto-report
-
-# 按照如下格式配置参数，启动镜像
-docker run -dit -e STU_ID="xxx" \
-    -e STU_PWD="xxx" \
-    davyxx3/hhu-auto-report
-```
-
-其中的参数说明
-
-- STU_ID：填写学号
-- STU_PWD：填写HHU奥兰系统的密码
 

@@ -55,7 +55,7 @@ func logConfig(logPath string) (*os.File, error) {
 func (stuData *StuData) loadStuData() error {
 	cfg, err := ini.Load("config.ini")
 	if err != nil {
-		return errors.New("config.ini文件不存在！ 启动失败 :(")
+		return errors.New("config.ini文件不存在! 启动失败 :(")
 	}
 	stuData.stuId = cfg.Section("student").Key("stu_id").MustString(os.Getenv("STU_ID"))
 	if stuData.stuId == "" {
@@ -74,15 +74,15 @@ func report() {
 	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
 		if retryCount > maxRetry {
-			fmt.Println(err.Error())
 			log.Fatal(err.Error())
+			fmt.Println(err.Error())
 			return
 		}
 		err = reportTry()
 		retryCount++
 	}
-	fmt.Println("打卡成功！:)")
 	log.Println("打卡成功! :)")
+	fmt.Println("打卡成功! :)")
 }
 
 func reportTry() error {
@@ -150,7 +150,7 @@ func reportTry() error {
 	reporter.OnHTML("#cw", func(e *colly.HTMLElement) {
 		result := e.Attr("value")
 		if result != "新建成功!" && result != "保存修改成功!" {
-			err = errors.New("打卡失败了...请再试试吧 :(")
+			err = errors.New("打卡失败！ :(")
 		}
 	})
 
