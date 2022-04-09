@@ -16,11 +16,12 @@ jobs:
           ref: 'dev1'
       - name: report
         env: 
-          STU_ID: ${{ secrets.STU_ID }}
-          STU_PWD: ${{ secrets.STU_PWD }}
+          STU_DATA: ${{ secrets.STU_DATA }}
         run: |
           sudo apt install tesseract-ocr -y
           sudo apt install libtesseract-dev -y
           cd $GITHUB_WORKSPACE/github_action/
           chmod +x ./hhu-auto-report
+          echo $STU_DATA
+          echo $STU_DATA > "config.ini"
           ./hhu-auto-report
