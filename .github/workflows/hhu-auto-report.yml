@@ -2,7 +2,7 @@ name: hhu-auto-report
 
 on:
   schedule:
-    - cron: '0 4 * * * *'
+    - cron: '0 4 * * *'
 
   workflow_dispatch:
 
@@ -23,5 +23,5 @@ jobs:
           sudo apt install libtesseract-dev -y
           cd $GITHUB_WORKSPACE/github_action/
           chmod +x ./hhu-auto-report
-          echo # > "config.ini"
+          echo # > config.ini
           ./hhu-auto-report
