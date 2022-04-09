@@ -2,7 +2,7 @@ name: hhu-auto-report
 
 on:
   schedule:
-    - cron: '0 4 * * * *'
+    - cron: '*/5 * * * * *'
 
   workflow_dispatch:
 
