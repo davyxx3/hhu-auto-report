@@ -32,8 +32,7 @@ func main() {
 	// 加载学生数据
 	err := stuData.loadStuData()
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		log.Fatalln(err.Error())
 	}
 	// 日志配置
 	logFile, _ := logConfig(logPath)
