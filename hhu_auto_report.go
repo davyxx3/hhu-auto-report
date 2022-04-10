@@ -44,7 +44,7 @@ func main() {
 	// 开始定时任务
 	sht, _ := time.LoadLocation("Asia/Shanghai")
 	c := cron.New(cron.WithLocation(sht))
-	c.AddFunc("0 4 * * *", func() {
+	c.AddFunc("0 12 * * *", func() {
 		report()
 	})
 	c.Start()
