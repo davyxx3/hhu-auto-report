@@ -2,16 +2,10 @@
 
 河海大学自动健康打卡，适用于最新的打卡方式（2022年4月份），基于Go语言实现
 
-
-
 ## 集成组件
 
 - 爬虫框架[scrapy](https://github.com/scrapy/scrapy)，用于访问网址、发起请求
 - OCR工具[gosseract](https://github.com/otiai10/gosseract)，用于验证码识别
-
-- 配置加载工具[ini](https://github.com/go-ini/ini)，用于加载数据源配置
-
-
 
 ## 使用方式
 
