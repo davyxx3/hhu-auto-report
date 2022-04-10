@@ -30,12 +30,14 @@ var maxRetry = 10
 var logPath = "./hhu_auto_report.log"
 
 func main() {
+	fmt.Println("正在加载学生数据...")
 	// 加载学生数据
 	err := stuData.loadStuData()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	fmt.Println("正在配置日志信息...")
 	// 日志配置
 	logFile, _ := logConfig(logPath)
 	defer logFile.Close()
@@ -69,10 +71,12 @@ func (stuData *StuData) loadStuData() error {
 	if stuData.stuId == "" {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
+	fmt.Println("成功读取学号！")
 	stuData.stuPwd = cfg.Section("student").Key("stu_pwd").MustString(os.Getenv("STU_PWD"))
 	if stuData.stuId == "" {
 		return errors.New("无法读取密码！启动失败！ :(")
 	}
+	fmt.Println("成功读取密码！")
 	return nil
 }
 
