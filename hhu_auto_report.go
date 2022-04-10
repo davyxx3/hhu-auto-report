@@ -12,7 +12,7 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/otiai10/gosseract/v2"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 	"gopkg.in/ini.v1"
 )
 
@@ -40,8 +40,11 @@ func main() {
 	logFile, _ := logConfig(logPath)
 	defer logFile.Close()
 	// 开始定时任务
-	c := cron.New()
-	c.AddFunc("0 0 12 * * * ", report)
+	sht, _ := time.LoadLocation("Asia/Shanghai")
+	c := cron.New(cron.WithLocation(sht))
+	c.AddFunc("0 4 * * *", func() {
+		report()
+	})
 	c.Start()
 	fmt.Println("自动打卡已启动! 默认每天中午12点打卡哦! :)")
 	select {}

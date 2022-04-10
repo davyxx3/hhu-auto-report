@@ -2,7 +2,7 @@ name: hhu-auto-report
 
 on:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 4 * * *'
 
   workflow_dispatch:
 
@@ -16,11 +16,11 @@ jobs:
           ref: 'dev1'
       - name: report
         env: 
-          STU_DATA: ${{ secrets.STU_DATA }}
+          STU_ID: ${{ secrets.STU_ID }}
+          STU_PWD: ${{ secrets.STU_PWD }}
         run: |
-          apt install tesseract-ocr -y
-          apt install libtesseract-dev -y
+          sudo apt install tesseract-ocr -y
+          sudo apt install libtesseract-dev -y
           cd $GITHUB_WORKSPACE/github_action/
           chmod +x ./hhu-auto-report
-          echo $STU_DATA > "config.ini"
           ./hhu-auto-report
