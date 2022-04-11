@@ -86,7 +86,7 @@ func report() {
 	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
 		if retryCount > maxRetry {
-			log.Fatal(err.Error())
+			log.Println(err.Error())
 			fmt.Println(err.Error())
 			return
 		}
