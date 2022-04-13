@@ -1,0 +1,26 @@
+name: hhu-auto-report-test
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  auto_report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'dev1'
+      - name: report-test
+        env: 
+          STU_ID: ${{ secrets.STU_ID }}
+          STU_PWD: ${{ secrets.STU_PWD }}
+        run: |
+          sudo apt install tesseract-ocr -y
+          sudo apt install libtesseract-dev -y
+          cd $GITHUB_WORKSPACE/github_action/
+          chmod +x ./hhu-auto-report
+          ./hhu-auto-report
