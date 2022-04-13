@@ -19,6 +19,7 @@ jobs:
           STU_ID: ${{ secrets.STU_ID }}
           STU_PWD: ${{ secrets.STU_PWD }}
         run: |
+          sudo apt update -y
           sudo apt install tesseract-ocr -y
           sudo apt install libtesseract-dev -y
           cd $GITHUB_WORKSPACE/github_action/
