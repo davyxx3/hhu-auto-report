@@ -25,7 +25,7 @@ var stuData = StuData{}
 var loginData = url.Values{}
 var reportData = url.Values{}
 
-var timeStr = time.Now().Format("2006-01-02")
+var cstSH, _ = time.LoadLocation("Asia/Shanghai")
 var maxRetry = 10
 var logPath = "./hhu_auto_report.log"
 
@@ -42,8 +42,7 @@ func main() {
 	logFile, _ := logConfig(logPath)
 	defer logFile.Close()
 	// 开始定时任务
-	sht, _ := time.LoadLocation("Asia/Shanghai")
-	c := cron.New(cron.WithLocation(sht))
+	c := cron.New(cron.WithLocation(cstSH))
 	c.AddFunc("0 12 * * *", func() {
 		report()
 	})
@@ -187,7 +186,7 @@ func reportDataInit(reportData *url.Values) {
 	reportData.Set("__EVENTTARGET", "databc")
 	reportData.Set("__EVENTARGUMENT", "")
 	reportData.Set("__VIEWSTATEENCRYPTED", "")
-	reportData.Set("tbrq", timeStr)
+	reportData.Set("tbrq", time.Now().In(cstSH).Format("2006-01-02"))
 	reportData.Set("twqk", "正常（37.3℃及以下）")
 	reportData.Set("twqkdm", "1")
 	reportData.Set("sfzx", "校内")
@@ -212,7 +211,7 @@ func reportDataInit(reportData *url.Values) {
 	reportData.Set("qx_u", "1")
 	reportData.Set("qx_d", "0")
 	reportData.Set("databcxs", "1")
-	reportData.Set("pkey", timeStr)
+	reportData.Set("pkey", time.Now().In(cstSH).Format("2006-01-02"))
 	reportData.Set("dcbz", "1")
 	reportData.Set("xqbz", "1")
 	reportData.Set("st_xq", "2021-2022-2")
