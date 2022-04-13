@@ -44,7 +44,7 @@ func main() {
 	// 开始定时任务
 	sht, _ := time.LoadLocation("Asia/Shanghai")
 	c := cron.New(cron.WithLocation(sht))
-	c.AddFunc("0 12 * * *", func() {
+	c.AddFunc("0 5 * * *", func() {
 		report()
 	})
 	c.Start()
@@ -71,20 +71,22 @@ func (stuData *StuData) loadStuData() error {
 	if stuData.stuId == "" {
 		return errors.New("无法读取学号！启动失败！ :(")
 	}
-	fmt.Println("成功读取学号！")
+	fmt.Println("成功读取学号！", stuData.stuId)
 	stuData.stuPwd = cfg.Section("student").Key("stu_pwd").MustString(os.Getenv("STU_PWD"))
 	if stuData.stuId == "" {
 		return errors.New("无法读取密码！启动失败！ :(")
 	}
-	fmt.Println("成功读取密码！")
+	fmt.Println("成功读取密码！", stuData.stuPwd)
 	return nil
 }
 
 func report() {
+	fmt.Println("打卡开始！")
 	var retryCount = 0
 	err := reportTry()
 	// 若打卡失败，则重试，直到超过阈值为止
 	for err != nil {
+		fmt.Println("打卡失败, 正在重试中...")
 		if retryCount > maxRetry {
 			log.Println(err.Error())
 			fmt.Println(err.Error())
