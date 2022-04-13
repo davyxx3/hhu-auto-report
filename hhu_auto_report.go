@@ -134,7 +134,7 @@ func reportTry() error {
 	// 获取打卡结果，完成打卡
 	reporter.OnHTML("#cw", func(e *colly.HTMLElement) {
 		result := e.Attr("value")
-		if result != "新建成功!" && result != "保存修改成功!" {
+		if result != "增加记录成功!" && result != "保存修改成功!" {
 			err = errors.New("打卡失败！ :(")
 		}
 	})
