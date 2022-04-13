@@ -12,12 +12,22 @@
 
 
 
+
 ## 集成组件
 
 - 爬虫框架[scrapy](https://github.com/scrapy/scrapy)，用于访问网址、发起请求
 - OCR工具[gosseract](https://github.com/otiai10/gosseract)，用于验证码识别
 - 定时任务[cron](https://github.com/robfig/cron)，用于每天定时完成打卡任务
 - 配置加载工具[ini](https://github.com/go-ini/ini)，用于加载数据源配置
+
+
+
+
+## 注意事项
+
+最近项目刚刚上线，小修小改更新频繁，请随时注意fetch upstream！！而且最好所有分支都fetch一下！！
+
+![image-20220414060312338](https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20220414060312338.png)
 
 
 
