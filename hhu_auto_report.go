@@ -23,7 +23,8 @@ var stuData = StuData{}
 var loginData = url.Values{}
 var reportData = url.Values{}
 
-var timeStr = time.Now().Format("2006-01-02")
+var cstSH, _ = time.LoadLocation("Asia/Shanghai")
+var timeStr = time.Now().In(cstSH).Format("2006-01-02")
 var maxRetry = 10
 
 func main() {
