@@ -15,7 +15,7 @@
 
 ## 集成组件
 
-- 爬虫框架[scrapy](https://github.com/scrapy/scrapy)，用于访问网址、发起请求
+- 爬虫框架[colly](https://github.com/gocolly/colly)，用于访问网址、发起请求
 - OCR工具[gosseract](https://github.com/otiai10/gosseract)，用于验证码识别
 - 定时任务[cron](https://github.com/robfig/cron)，用于每天定时完成打卡任务
 - 配置加载工具[ini](https://github.com/go-ini/ini)，用于加载数据源配置
@@ -123,27 +123,11 @@ docker run -d -e STU_ID="xxx" \
 
 
 
-##### Ubuntu
+##### Ubuntu/Debian
 
-在Ubuntu下，可以直接从默认包管理工具直接安装：
-
-```bash
-sudo apt install tesseract-ocr
-sudo apt install libtesseract-dev
-```
-
-
-
-##### Debian
-
-在Debian下，需要切换[阿里云镜像站](https://mirrors.aliyun.com/debian/)，再进行安装
+在Ubuntu/Debian下，可以直接从默认包管理工具直接安装：
 
 ```bash
-cd /etc/apt
-sudo > sources.list
-echo "deb http://mirrors.aliyun.com/debian  stable main contrib non-free" >> sources.list
-echo "deb http://mirrors.aliyun.com/debian  stable-updates main contrib non-free" >> sources.list
-sudo apt update && sudo apt upgrade
 sudo apt install tesseract-ocr
 sudo apt install libtesseract-dev
 ```
@@ -186,3 +170,5 @@ go run ./hhu-auto-report.go
 ```
 
 可以将程序设为开机启动并放到后台，这样就可以实现每天的自动打卡了
+
+因为操作略繁杂，还是推荐Docker的方式部署到自己的服务器上
