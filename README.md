@@ -8,8 +8,6 @@
 
 如果重试10次仍失败，大概率是学校服务器挂掉了，这种情况只能手动打卡
 
-（未来会加入打卡时间和打卡次数的配置）
-
 
 
 
@@ -20,14 +18,6 @@
 - 定时任务[cron](https://github.com/robfig/cron)，用于每天定时完成打卡任务
 - 配置加载工具[ini](https://github.com/go-ini/ini)，用于加载数据源配置
 
-
-
-
-## 注意事项
-
-最近项目刚刚上线，小修小改更新频繁，请随时注意fetch upstream！！而且最好所有分支都fetch一下！！
-
-![image-20220414060312338](https://cdn.jsdelivr.net/gh/davyxx3/pics/blog_img/image-20220414060312338.png)
 
 
 
